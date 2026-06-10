@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اسألني حفر الباطن</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:#0a0a0f;color:#e8e0d0;padding:20px;min-height:100vh}
+.header{text-align:center;padding:30px 0 20px;border-bottom:1px solid #2a2a3a;margin-bottom:24px}
+.header h1{font-size:1.8rem;font-weight:900;color:#fff}
+.header h1 span{color:#f5a623}
+.header p{font-size:0.85rem;color:#666;margin-top:6px}
+.card{background:#13131e;border:1px solid #22223a;border-radius:14px;padding:20px;margin-bottom:16px}
+.label{font-size:0.7rem;font-weight:700;color:#f5a623;letter-spacing:2px;margin-bottom:10px}
+.title{font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:14px}
+select{width:100%;background:#0d0d18;border:1px solid #2a2a4a;border-radius:10px;color:#e8e0d0;font-family:'Tajawal',sans-serif;font-size:0.95rem;padding:12px 14px;outline:none}
+.btn{width:100%;padding:14px;border-radius:10px;border:none;font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:10px;transition:all 0.2s}
+.btn-p{background:#f5a623;color:#0a0a0f}
+.btn-p:disabled{background:#4a3a10;color:#888;cursor:not-allowed}
+.btn-s{background:#1e1e30;color:#e8e0d0;border:1px solid #2a2a4a}
+.out{background:#0d0d18;border:1px solid #2a2a4a;border-radius:10px;padding:14px;font-size:1rem;line-height:1.8;color:#fff;margin-top:12px;display:none;white-space:pre-wrap}
+.out.on{display:block}
+canvas{width:100%;border-radius:10px;margin-top:12px;display:none;border:1px solid #2a2a4a}
+canvas.on{display:block}
+.badge{display:none;background:#0d2a1a;border:1px solid #1a5a30;color:#4ade80;border-radius:6px;padding:4px 10px;font-size:0.8rem;margin-top:8px}
+.badge.on{display:inline-block}
+.tag{display:inline-block;background:#1e1e30;border:1px solid #2a2a4a;border-radius:6px;padding:4px 10px;font-size:0.75rem;color:#888;margin:3px 2px}
+hr{border:none;border-top:1px solid #1a1a2a;margin:14px 0}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>اسألني <span>حفر الباطن</span></h1>
+  <p>Agent توليد المحتوى اليومي</p>
+</div>
+
+<div class="card">
+  <div class="label">الخطوة ١</div>
+  <div class="title">اختر الفئة وولّد السؤال</div>
+  <select id="cat">
+    <option value="0">علاقات وزواج 🔥</option>
+    <option value="1">مجتمع وعادات</option>
+    <option value="2">شغل ومال</option>
+    <option value="3">صحة ونفسية</option>
+    <option value="4">محلي حفر الباطن</option>
+  </select>
+  <button class="btn btn-p" onclick="getQ()">🎯 ولّد سؤال ترند</button>
+  <div class="out" id="qout"></div>
+  <button class="btn btn-s" onclick="getQ()" id="re" style="display:none">🔄 سؤال ثاني</button>
+</div>
+
+<div class="card">
+  <div class="label">الخطوة ٢</div>
+  <div class="title">توليد صورة الفيديو</div>
+  <button class="btn btn-p" onclick="makeImg()" id="imgBtn" disabled>🖼️ ابتكر الصورة</button>
+  <canvas id="cv" width="1080" height="1920"></canvas>
+</div>
+
+<div class="card">
+  <div class="label">الخطوة ٣</div>
+  <div class="title">توليد الصوت</div>
+  <button class="btn btn-p" onclick="speak()" id="spBtn" disabled>🎙️ شغّل الصوت</button>
+  <div class="badge on" id="spNote" style="display:none">✅ سجّل الشاشة أثناء التشغيل</div>
+</div>
+
+<div class="card">
+  <div class="label">الخطوة ٤</div>
+  <div class="title">تحميل</div>
+  <button class="btn btn-p" onclick="dlImg()" id="dlBtn" disabled>⬇️ حمّل الصورة</button>
+  <button class="btn btn-s" onclick="cpHash()">📋 انسخ الهاشتاقات</button>
+  <hr>
+  <div>
+    <span class="tag">#حفر_الباطن</span>
+    <span class="tag">#المنطقة_الشرقية</span>
+    <span class="tag">#السعودية</span>
+    <span class="tag">#اسألني</span>
+    <span class="tag">#تيك_توك_السعودية</span>
+  </div>
+  <div class="badge" id="hbadge">✅ تم النسخ</div>
+</div>
+
+<script>
+const Qs = [
+  ["أنا بنت من حفر الباطن، خطبني واحد من قبيلة ثانية وأهلي رفضوا بس بسبب القبيلة. أنا أحبه وهو إنسان محترم. هل أطيع أهلي وأخسره؟","أنا بنت عمري ٢٦ وأهلي يرفضون أي خاطب ما يكون من نفس القبيلة. كل مرة يجي واحد يردونه. وين الحل؟","زوجي يمنعني أسافر مع أهلي حتى لو لزيارة أمي المريضة. هل هذا من حقه؟","أنا شاب من حفر الباطن أحب بنت من عيلة ثانية وهي تقبلني بس أهلها رفضوا. هل أكمل أو أنسى؟","زوجتي تطلب طلاق بدون سبب واضح. أنا ما قصّرت معها. كيف أتصرف؟"],
+  ["ليش أهل حفر الباطن ما يأجرون بيوتهم إلا لعزاب سعوديين؟ العائلات الوافدة تعاني بشكل ما يتخيله أحد.","جارتي تتجسس علي وتنقل كلامي لكل الحي. كيف أتعامل معها بدون مشاكل؟","ليش الناس في حفر الباطن ما تحب تساعد بعض في الشغل؟ كل واحد يسحب البساط من تحت الثاني.","شايف إن الجيل الجديد في حفر الباطن تغير كثير عن الجيل القديم. هل هذا تطور أو انحلال؟","أنا أم أحس إن مدارس حفر الباطن ما تعطي أبنائي حقهم. كيف أطالب بحقوقهم؟"],
+  ["موظف حكومي راتبه ٨ آلاف يسأل: هل أترك الوظيفة وأفتح مشروع؟","أنا بنت أبي يرفض أشتغل رغم إني خريجة جامعة. عمري ٢٤ وأبي أكون مستقلة. وش أسوي؟","صاحبي أخذ مني فكرة مشروع وبدأ ينفذها لحاله بدون ما يشاركني. كيف أتصرف؟","شركتي ما دفعت لي راتب ٣ أشهر وكل ما أطالبهم يماطلون. وين أشتكي في حفر الباطن؟","أنا فري لانسر من حفر الباطن، عملاؤي كلهم يماطلون بالدفع. كيف أحمي نفسي؟"],
+  ["أحس بوحدة شديدة وأنا محاط بناس. ما أقدر أشرح هذا الإحساس لأحد. هل هذا طبيعي؟","زوجي يعاني من اكتئاب بس يرفض يروح دكتور لأنه يعتبرها ضعف. كيف أقنعه؟","أنا شاب أعاني من قلق شديد قبل أي موقف اجتماعي. حتى الاجتماعات في الشغل تخوّفني. وش أسوي؟","أمي مريضة وأنا الوحيد اللي يهتم فيها وإخواني مسافرين. أحس بإرهاق ما ينوصف. كيف أتحمل؟","طفلي عنده اضطراب سلوكي والمدرسة تشتكي منه دايم. وين أجد دعم متخصص في حفر الباطن؟"],
+  ["ليش حفر الباطن ما فيها مول حقيقي لحد الآن؟ كل المدن الثانية عندها ونحن لا.","وين أحسن مطعم في حفر الباطن للعزومات الكبيرة؟ عندي مناسبة قادمة وأبي رأي الناس.","شنو أفضل نادي رياضي في حفر الباطن للنساء؟ أبي أبدأ رحلة رياضية جدية.","ليش الطرق الداخلية في حفر الباطن ما تتصلح؟ نفس الحفر من سنين.","وين أروح بعيلتي في حفر الباطن يوم الإجازة؟ ما في أماكن ترفيه محترمة."]
+];
+
+let cur = '';
+
+function getQ() {
+  const cat = parseInt(document.getElementById('cat').value);
+  const list = Qs[cat];
+  const q = list[Math.floor(Math.random() * list.length)];
+  cur = q;
+  const out = document.getElementById('qout');
+  out.textContent = q;
+  out.classList.add('on');
+  document.getElementById('re').style.display = 'block';
+  document.getElementById('imgBtn').disabled = false;
+  document.getElementById('spBtn').disabled = false;
+}
+
+function makeImg() {
+  if (!cur) return;
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  cv.width = 1080; cv.height = 1920;
+
+  const bg = ctx.createLinearGradient(0,0,0,1920);
+  bg.addColorStop(0,'#05050f');
+  bg.addColorStop(0.5,'#0a0820');
+  bg.addColorStop(1,'#100818');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,1080,1920);
+
+  for(let i=0;i<150;i++){
+    ctx.fillStyle=`rgba(255,255,255,${Math.random()*0.7})`;
+    ctx.beginPath();
+    ctx.arc(Math.random()*1080,Math.random()*800,Math.random()*2.5,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  const glow = ctx.createRadialGradient(540,960,0,540,960,500);
+  glow.addColorStop(0,'rgba(245,166,35,0.1)');
+  glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=glow;
+  ctx.fillRect(0,0,1080,1920);
+
+  ctx.font='bold 60px Tajawal,Arial';
+  ctx.fillStyle='#f5a623';
+  ctx.textAlign='center';
+  ctx.fillText('اسألني حفر الباطن',540,140);
+
+  ctx.strokeStyle='rgba(245,166,35,0.4)';
+  ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(180,165);ctx.lineTo(900,165);ctx.stroke();
+
+  ctx.font='bold 400px Tajawal,Arial';
+  ctx.fillStyle='rgba(245,166,35,0.03)';
+  ctx.fillText('؟',540,900);
+
+  ctx.font='bold 42px Tajawal,Arial';
+  ctx.fillStyle='rgba(245,166,35,0.8)';
+  ctx.fillText('سؤال اليوم',540,680);
+
+  ctx.font='bold 52px Tajawal,Arial';
+  ctx.fillStyle='#ffffff';
+  wrap(ctx,cur,540,900,880,76);
+
+  const bar=ctx.createLinearGradient(0,1780,0,1920);
+  bar.addColorStop(0,'rgba(245,166,35,0)');
+  bar.addColorStop(1,'rgba(245,166,35,0.2)');
+  ctx.fillStyle=bar;
+  ctx.fillRect(0,1780,1080,140);
+
+  ctx.font='bold 44px Tajawal,Arial';
+  ctx.fillStyle='#f5a623';
+  ctx.fillText('شاركنا رأيك في التعليقات 👇',540,1875);
+
+  cv.classList.add('on');
+  document.getElementById('dlBtn').disabled=false;
+}
+
+function wrap(ctx,text,x,y,maxW,lh){
+  const words=text.split(' ');
+  let line='',lines=[];
+  for(let w of words){
+    const t=line+w+' ';
+    if(ctx.measureText(t).width>maxW&&line){lines.push(line.trim());line=w+' ';}
+    else line=t;
+  }
+  lines.push(line.trim());
+  let sy=y-(lines.length*lh)/2;
+  lines.forEach(l=>{ctx.fillText(l,x,sy);sy+=lh;});
+}
+
+function speak(){
+  if(!cur)return;
+  const u=new SpeechSynthesisUtterance(cur);
+  u.lang='ar-SA';u.rate=0.85;
+  const v=speechSynthesis.getVoices().find(v=>v.lang.startsWith('ar'));
+  if(v)u.voice=v;
+  speechSynthesis.speak(u);
+  document.getElementById('spNote').style.display='inline-block';
+}
+
+function dlImg(){
+  const a=document.createElement('a');
+  a.download='hafr_question.png';
+  a.href=document.getElementById('cv').toDataURL('image/png');
+  a.click();
+}
+
+function cpHash(){
+  navigator.clipboard.writeText('#حفر_الباطن #المنطقة_الشرقية #السعودية #اسألني #تيك_توك_السعودية');
+  document.getElementById('hbadge').classList.add('on');
+}
+
+speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+</script>
+</body>
+</html>
